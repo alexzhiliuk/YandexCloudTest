@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="text/html">
+<title>Список публикаций</title>
+<style>
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	body{
+		/*min-height: 1200px;*/
+		font:1.2em/1.62 sans-serif;
+		background-color: #EBEDEF;
+	}
+	nav{
+		margin: 10px 0;
+	}
+	h1,h2 {
+		line-height:1.2;
+	}
+	h1{
+		display: inline-block;
+		width: 75%;
+		font-size:60px;
+		text-align: center;
+		margin-left: 11%;
+	}
+	h2{
+		text-align: center;
+	}
+
+	h3.category{
+		display: inline-block;
+		font-size: 16px;
+		background-color: #4DA2B4;
+		border-radius: 10px;
+		padding: 3px;
+	}
+
+	article{
+		min-height: 1000px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-content: center;
+		align-items: center;
+	}
+	div{
+		width: 1000px;
+		max-height: 200px;
+		overflow: auto;
+		border: 2px solid red;
+		border-radius: 30px;
+		/*margin: 10px auto;*/
+		padding: 10px 20px;
+		margin: 20px 0;
+	}
+
+	div.last{
+		margin-bottom: 50px;
+	}
+
+	header{
+		padding: 0px;
+	}
+	header p{
+		text-align: right;
+	}
+	a{
+		color: darkblue;
+		text-decoration: none; 
+	}
+	p.from_who{
+		display: inline-block;
+		font-size: 14px;
+		background-color: #AAAEB4;
+		border-radius: 10px;
+		padding: 3px;
+	}
+	p.body{
+		font-size: 22px;
+	}
+	p.how_to_use{
+		display: inline-block;
+		margin-left: 40px;
+	}
+	.list_category{
+		border: none;
+	}
+	ol{/*for nav on flex*/
+		width: 100%;
+		list-style-type: none;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+	}
+	ol a{
+		color: #282923;
+	}
+	/*ol{
+		margin-left: 46%;
+		list-style-type: none;
+	}*/
+</style>
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+	<header>{% if category %}<h1>Категория: {{ category }}</h1>{% else %}<h1>Список всех публикаций</h1>{% endif %}<p class="how_to_use"><a class="how_to_use" href="">Как этим пользоваться?</a></p></header>
+	<nav>
+		<ol>
+			<li><a href="{% url "main" %}">Главная</a></li>
+			<li><a href="{% url "list_by_category" "Cooking" %}">Cooking</a></li>
+			<li><a href="{% url "list_by_category" "Auto" %}">Auto</a></li>
+			<li><a href="{% url "list_by_category" "Home" %}">Home</a></li>
+			<li><a href="{% url "list_by_category" "Children" %}">Children</a></li>
+			<li><a href="{% url "list_by_category" "Another" %}">Another</a></li>
+		</ol>
+	</nav>
+	<article>
+		<header>
+			
+		</header>
+		<!--<div class="list_category">
+			<form action="." method="POST" name="take">
+				<input type="checkbox" name="cooking" value="Cooking">Cooking <br>
+				<input type="checkbox" name="auto" value="Auto">Auto <br>
+				<input type="checkbox" name="children" value="Children">Children <br>
+				<input type="checkbox" name="home" value="Home">Home <br>
+				<input type="checkbox" name="another" value="Another">Another <br>
+				<input type="submit" name="input-submit" value="Перейти к категориям">
+				{% csrf_token %}
+			</form>-->
+			<!--<ol>
+				<li><a href="{% url "main" %}">Главная</a></li>
+				<li><a href="{% url "list_by_category" "Cooking" %}">Cooking</a></li>
+				<li><a href="{% url "list_by_category" "Auto" %}">Auto</a></li>
+				<li><a href="{% url "list_by_category" "Home" %}">Home</a></li>
+				<li><a href="{% url "list_by_category" "Children" %}">Children</a></li>
+				<li><a href="{% url "list_by_category" "Another" %}">Another</a></li>
+			</ol>-->
+    	{% for pub in posts %}
+		{% if forloop.last %}
+		<div class="last">
+		{% else %}
+		<div>
+		{% endif %}
+        	<h2>{{ pub.title }}</h2>
+        	<h3 class="category">Категория: {{ pub.category }}</h3>
+        	<p class="body">{{ pub.body }}</p>
+        	<p class="from_who">
+            	Публикация {{ pub.author }} от {{ pub.when_published }}
+        	</p>
+    	</div>
+    	{% empty %}
+        	<h2>Публикаций нет</h2>
+        	<p>Чтобы добавить что-то в список, зайдите в админку и добавьте их оттуда.</p>
+    	{% endfor %}
+	</article>
+	<script>
+		jQuery(document).on('click', '.how_to_use', function(){
+			alert("1. Чтобы увидеть список всех постов, перейдите на главную страницу(:8000/).\n 2. Чтобы увидеть посты определенной категории, в поиске добвате '/<категория>' или используйте верхний блок навигации по категориям.\n 3. Чтобы увидеть посты как JSON объекты, добавьте к пустому полю(:8000/) 'api/posts/'.\n 4. Чтобы увидеть JSON объект об определенном посту, добавьте к пустому полю 'api/posts/'<id поста>'.\n 5. Чтобы увидеть JSON объект о всех категориях, к пустому полю доваьте 'api/category/'.\n 6. Чтобы увидеть JSON объект о постах в одной категории, добавьте к пустому полю 'api/category/<категория>'. ");
+			
+		});
+	</script>
+</body>
+</html>
